@@ -2,7 +2,7 @@
 #Date: 17-Sep-2021
 
 '''
-    Scricd pt Descripción:
+    Descripción del Script:
     Cree un jugador en Python que permita a un sólo jugador
     lanzar dos dados en varias oportunidades consecutivas, y 
     finalice el juego cuando obtenga un par de unos [D1:1-D2:1]
