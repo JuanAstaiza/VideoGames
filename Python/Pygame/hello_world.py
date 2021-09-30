@@ -21,6 +21,11 @@ height=400
 mywindow=pygame.display.set_mode((width,height))
 pygame.display.set_caption("Number Race v 1.0")
 
+#Cargar imagen
+icon = pygame.image.load('images/car.png')
+#setear imagen
+pygame.display.set_icon(icon)
+
 # Setear Colores R(red) G (Green) B (Blue) => HxD
 # RGB => 0-225
 
