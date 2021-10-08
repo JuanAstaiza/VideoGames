@@ -20,7 +20,9 @@ class Ball(pygame.sprite.Sprite):
         self.rect = self.img_ball.get_rect()
         self.rect.centerx = WIDTH / 2
         self.rect.centery = HEIGHT / 2
-        self.speed = [5,5] #[]
+        # [Param1 -> Veloc del mov. / Param2 -> Amplitud del mov]
+        # A mayor amplitud rebote afecta eje Y y a menor amplitud rebote afecte eje X.
+        self.speed = [2,2] #[]
 
     def pibot(self):
         #validate Y <- ¡! - >
@@ -97,7 +99,8 @@ pygame.key.set_repeat(20)
 
 ball = Ball()
 player = Bar()
-wall = Wall(112)
+totalBricks=int(input("Digita la cantidad de ladrillos a generar: "))
+wall = Wall(totalBricks)
 
 #Loop (Revisión cíclica de los eventos) => Listener
 while True:
@@ -114,6 +117,31 @@ while True:
 
     #call pibot
     ball.pibot()
+
+    #collisions between bar and ball
+
+    #Cambio de trayectoria de la bola
+    if pygame.sprite.collide_rect(ball,player):  #Player is the bar.
+         ball.speed[1]=-ball.speed[1]
+
+    # Collisions between ball and wall (bricks)Destroy bricks
+    #sprite el objeto principal. balon Accionar
+    #group el objeto que se va a chocar  los ladrillos.
+
+    elements =  pygame.sprite.spritecollide(ball,wall,False,collided=None)
+    if elements : #Mientras existan ladrillos para chocar.
+        brink = elements[0]
+        centx = ball.rect.centerx
+        if centx < brink.rect.left or centx > brink.rect.right:
+            #Afectamos velocidad
+            ball.speed[0] = -ball.speed[0]
+        else:
+            # Afectamos trayectoria
+            ball.speed[1] = -ball.speed[1]
+        wall.remove(brink)
+
+
+
     #set Background Color
     screen.fill(BG_COLOR)
     #Draw de la ball
