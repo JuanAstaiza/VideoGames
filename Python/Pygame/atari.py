@@ -103,6 +103,7 @@ totalBricks=int(input("Digita la cantidad de ladrillos a generar: "))
 wall = Wall(totalBricks)
 
 #Loop (Revisión cíclica de los eventos) => Listener
+
 while True:
     game_clock.tick(60)
     for event in pygame.event.get():
