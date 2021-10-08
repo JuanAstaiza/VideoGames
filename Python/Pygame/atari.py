@@ -126,6 +126,7 @@ while True:
          ball.speed[1]=-ball.speed[1]
 
     # Collisions between ball and wall (bricks)Destroy bricks
+	
     #sprite el objeto principal. balon Accionar
     #group el objeto que se va a chocar  los ladrillos.
 
