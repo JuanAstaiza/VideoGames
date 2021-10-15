@@ -1,12 +1,14 @@
 '''
     Devloper: JuanAstaiza
-    Date: 30-Sep-2021
+    Date: 15-Oct-2021
     Description:
         Desarrollo de la version 1.0 de un video juego de atari
 '''
 
 #Importar librerias
 import sys
+import time
+import os
 import pygame
 
 pygame.init()
@@ -78,9 +80,42 @@ class Wall(pygame.sprite.Group):
                 posX = 0
                 posY += brick.rect.height
 
+def game_over():
+    msg = "Perdiste. Vuelve a intentarlo"
+    txt_color = (63,74,106)
+    txt_style = pygame.font.SysFont('Arial',40) #(Tipo de letra,Tamaño)
+    txt_screen = txt_style.render(msg,True,txt_color)
+    txt_screen_rect = txt_screen.get_rect()
+    txt_screen_rect.center = [WIDTH/2,HEIGHT/2]
+    screen.blit(txt_screen,txt_screen_rect)
+    pygame.display.flip()
+    print("perdiste")
+    time.sleep(1)
+    sys.exit()
+
+def set_score():
+    label = "Puntaje: "
+    txt_style = pygame.font.SysFont('Arial',20) #(Tipo de letra,Tamaño)
+    text_color = (255,255,255)
+    text =label + str(score).zfill(1)
+    txt_screen= txt_style.render(text,True,text_color)
+    txt_screen_rect = txt_screen.get_rect()
+    txt_screen_rect.topleft = [1,400]
+    screen.blit(txt_screen,txt_screen_rect)
+
+def set_lives():
+    label = "Vidas: "
+    text_color = (255,255,255)
+    txt_style = pygame.font.SysFont('Arial',20) #(Tipo de letra,Tamaño)
+    text  = label + str(player_lives).zfill(1)
+    txt_screen= txt_style.render(text,True,text_color)
+    # txt_screen= txt_style.render(label + str(player_lives).zfill(1),True,text_color)
+    txt_screen_rect = txt_screen.get_rect()
+    txt_screen_rect.topleft = [1,420]
+    screen.blit(txt_screen,txt_screen_rect)
+
+
 ##################################################################################################
-
-
 
 #General settings
 WIDTH = 640
@@ -99,11 +134,44 @@ pygame.key.set_repeat(20)
 
 ball = Ball()
 player = Bar()
-totalBricks=int(input("Digita la cantidad de ladrillos a generar: "))
-wall = Wall(totalBricks)
+
+print(":::::::::::::::::::::::::::")
+print("Menu nivel del juego")
+print(":::::::::::::::::::::::::::")
+print("1. Nivel Normal")
+print("2. Nivel Intermedio")
+print("3. Nivel Avanzado")
+print("4. Salir")
+print("")
+status = True
+while status:
+    opt=int(input("Seleccione el nivel: "))
+    if opt>=1 and opt<=4:
+        status = False
+
+if opt==1:
+    ladrillos=20
+elif opt==2:
+    ladrillos=100
+elif opt==3:
+    ladrillos=200
+elif opt==4:
+    print("Has salido del juego")
+    os.system("pause")
+    sys.exit()
+else:
+    print("Opcion invalida.")
+    os.system("pause")
+    sys.exit()
+
+wall = Wall(ladrillos)
+
+#wall = Wall(112)
+score = 0
+player_lives = 2
+
 
 #Loop (Revisión cíclica de los eventos) => Listener
-
 while True:
     game_clock.tick(60)
     for event in pygame.event.get():
@@ -125,8 +193,7 @@ while True:
     if pygame.sprite.collide_rect(ball,player):  #Player is the bar.
          ball.speed[1]=-ball.speed[1]
 
-    # Collisions between ball and wall (bricks)Destroy bricks
-	
+    # Collisions between ball and wall (bricks)Destroy bricks (Destruir ladrillos)
     #sprite el objeto principal. balon Accionar
     #group el objeto que se va a chocar  los ladrillos.
 
@@ -141,11 +208,23 @@ while True:
             # Afectamos trayectoria
             ball.speed[1] = -ball.speed[1]
         wall.remove(brink)
+        score = score + 1  #score+=1
 
+    #Llamar la función game over cuando la bola  toque el piso
+
+    if ball.rect.bottom >= HEIGHT:
+        player_lives = player_lives-1 #player_lives-=1
+        #game_over();
+        #print(":::: PERDISTE ::::")
+    if player_lives==0:
+        game_over()
 
 
     #set Background Color
     screen.fill(BG_COLOR)
+    set_score()
+
+    set_lives()
     #Draw de la ball
     screen.blit(ball.img_ball, ball.rect)
     #Draw de la bar
