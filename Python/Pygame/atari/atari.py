@@ -90,7 +90,8 @@ def game_over():
     screen.blit(txt_screen,txt_screen_rect)
     pygame.display.flip()
     print("perdiste")
-    time.sleep(1)
+    soundGameOver.play()
+    time.sleep(10)
     sys.exit()
 
 def set_score():
@@ -168,8 +169,11 @@ wall = Wall(ladrillos)
 
 #wall = Wall(112)
 score = 0
-player_lives = 2
-
+player_lives = 5
+sound_RemoveBricks = pygame.mixer.Sound('audios/eliminar_ladrillo.wav')
+sound_PelotaPiso = pygame.mixer.Sound('audios/pelota_suelo.wav')
+sound_chocarPelota_Paleta = pygame.mixer.Sound('audios/rebote_paleta.wav')
+soundGameOver = pygame.mixer.Sound('audios/gameover.wav')
 
 #Loop (Revisión cíclica de los eventos) => Listener
 while True:
@@ -192,6 +196,7 @@ while True:
     #Cambio de trayectoria de la bola
     if pygame.sprite.collide_rect(ball,player):  #Player is the bar.
          ball.speed[1]=-ball.speed[1]
+         sound_chocarPelota_Paleta.play()
 
     # Collisions between ball and wall (bricks)Destroy bricks (Destruir ladrillos)
     #sprite el objeto principal. balon Accionar
@@ -209,11 +214,13 @@ while True:
             ball.speed[1] = -ball.speed[1]
         wall.remove(brink)
         score = score + 1  #score+=1
+        sound_RemoveBricks.play()
 
     #Llamar la función game over cuando la bola  toque el piso
 
     if ball.rect.bottom >= HEIGHT:
         player_lives = player_lives-1 #player_lives-=1
+        sound_PelotaPiso.play()
         #game_over();
         #print(":::: PERDISTE ::::")
     if player_lives==0:
